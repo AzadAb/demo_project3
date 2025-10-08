@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Fraction Pie Demo</title>
+    <style>
+        body {
+            background: #fafafb;
+            font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
+        }
+
+        .content-box {
+            max-width: 800px;
+            margin: 40px auto;
+            background: #fff;
+            border-radius: 20px;
+            box-shadow: 0 2px 16px #e0e6eb;
+            padding: 32px 0 10px 0;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 6px;
+        }
+
+        .header h2 {
+            margin-bottom: 4px;
+            font-size: 2.0em;
+            letter-spacing: 0.02em;
+            color: #23234c;
+        }
+
+        .header p {
+            color: #42516e;
+            font-size: 1.07em;
+            margin: 0 0 10px 0;
+        }
+
+        .pie-cards-row {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 38px;
+            margin: 18px 0 13px 0;
+        }
+
+        .pie-card {
+            width: 138px;
+            height: 138px;
+            background: #f9fafd;
+            border-radius: 24px;
+            box-shadow: 0 1px 16px #ececec;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        svg.pie-svg {
+            background: transparent;
+            border-radius: 50%;
+        }
+
+        .pie-fraction {
+            position: absolute;
+            left: 0;
+            right: 0;
+            top: 58px;
+            text-align: center;
+            font-size: 1.7em;
+            font-weight: 500;
+            color: #223;
+            text-shadow: 0 1px 10px #fff8;
+        }
+
+        .operator {
+            font-size: 2.2em;
+            margin: 0 10px;
+            font-weight: 600;
+            color: #426bf9;
+        }
+
+        .center-btn {
+            text-align: center;
+            margin: 10px 0 20px 0;
+        }
+
+        .drag-btn {
+            background: #31e371;
+            color: #fff;
+            padding: 12px 40px;
+            font-size: 1.16em;
+            border: none;
+            border-radius: 20px;
+            box-shadow: 0 2px 14px #b0f2d6a2;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.15s;
+        }
+
+        .drag-btn:hover {
+            background: #219c54;
+        }
+
+        .quiz-block {
+            background: #f6f7fa;
+            max-width: 320px;
+            border-radius: 15px;
+            margin: 24px auto 10px auto;
+            padding: 18px 8px;
+            box-shadow: 0 2px 10px #eff1f5;
+        }
+
+        .quiz-block h4 {
+            font-size: 1.28em;
+            margin: 0 0 8px 0;
+            color: #25273a;
+        }
+
+        .frac-question {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 14px;
+            margin-top: 8px;
+        }
+
+        .frac-stack {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-size: 1.3em;
+        }
+
+        .frac-stack span {
+            margin: 1px;
+        }
+
+        .frac-ans {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .quiz-inp {
+            width: 60px;
+            margin: 3px 0;
+            text-align: center;
+            font-size: 1.14em;
+            border-radius: 6px;
+            border: 1.2px solid #96b2e5;
+            padding: 6px 3px;
+            background: #fff;
+        }
+
+        .quiz-btn-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 320px;
+            margin: 8px auto 0 auto;
+        }
+
+        .hint-btn {
+            background: #ffc600;
+            color: #fff;
+            border: none;
+            border-radius: 14px;
+            padding: 9px 24px;
+            font-size: 1.1em;
+            font-weight: 500;
+            cursor: pointer;
+        }
+
+        .check-btn {
+            background: #3462f7;
+            color: #fff;
+            border: none;
+            border-radius: 14px;
+            padding: 9px 28px;
+            font-size: 1.12em;
+            font-weight: 500;
+            cursor: pointer;
+        }
+
+        .footer {
+            text-align: center;
+            color: #444;
+            margin-top: 18px;
+            font-size: 1.12em;
+        }
+
+        .message {
+            text-align: center;
+            min-height: 24px;
+            font-weight: 500;
+            margin: 10px 0;
+            color: #3479ed;
+        }
+
+        @media (max-width:600px) {
+            .content-box {
+                padding: 10px 2vw;
+            }
+
+            .pie-cards-row {
+                flex-direction: column;
+                gap: 16px;
+            }
+
+            .quiz-block,
+            .quiz-btn-row {
+                max-width: 96vw;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="content-box">
+        <div class="header">
+            <h2>Visualizing Operations</h2>
+            <p>Click the button below to start dragging slices!</p>
+        </div>
+        <div class="pie-cards-row">
+            <div class="pie-card">
+                <svg id="pie1" class="pie-svg" width="128" height="128"></svg>
+                <span class="pie-fraction" id="frac1Text">2/3</span>
+            </div>
+            <span class="operator">+</span>
+            <div class="pie-card">
+                <svg id="pie2" class="pie-svg" width="128" height="128"></svg>
+                <span class="pie-fraction" id="frac2Text">1/3</span>
+            </div>
+            <span class="operator">=</span>
+            <div class="pie-card">
+                <svg id="pie3" class="pie-svg" width="128" height="128"></svg>
+                <span class="pie-fraction" id="frac3Text">0/3</span>
+            </div>
+        </div>
+        <div class="center-btn"><button class="drag-btn" onclick="showMsg()">Let's Drag and See <span
+                    style='font-size:1.1em'>🖐️</span></button></div>
+        <div class="quiz-block">
+            <h4>Fraction Addition Quiz</h4>
+            <div class="frac-question">
+                <div class="frac-stack">
+                    <span>2</span><span style="border-top:1px solid #aaa">3</span>
+                </div><span style="font-size:1.18em;">+</span>
+                <div class="frac-stack">
+                    <span>1</span><span style="border-top:1px solid #aaa">3</span>
+                </div><span style="font-size:1.18em;">=</span>
+                <div class="frac-ans">
+                    <input id="numerator" class="quiz-inp" placeholder="Numerator" readonly>
+                    <input id="denominator" class="quiz-inp" placeholder="Denominator" readonly>
+                </div>
+            </div>
+        </div>
+        <div class="quiz-btn-row">
+            <button class="hint-btn" id="hintButton" onclick="showHint()">Get Hint</button>
+            <button class="check-btn" id="checkButton" onclick="checkAns()">✔ Check Answer</button>
+            <button class="check-btn" id="nextBtn" style="background:#52caff;display:none;">Next &rarr;</button>
+        </div>
+        <div class="message" id="messageBox"></div>
+        <div class="footer">Question 1 of 3</div>
+    </div>
+    <script>
+        const PIE_SIZE = 128, CENTER = PIE_SIZE / 2, RADIUS = 42;
+        const QUESTIONS = [
+            { a: 2, b: 1, denom: 3, solution: { num: 3, denom: 3 } },
+            { a: 1, b: 2, denom: 4, solution: { num: 3, denom: 4 } },
+            { a: 3, b: 2, denom: 5, solution: { num: 5, denom: 5 } }
+        ];
+        let qIndex = 0, fractions, locked = false;
+
+        function setupQuestion(idx) {
+            let q = QUESTIONS[idx];
+            fractions = [
+                { pie: 'pie1', numerator: q.a, denominator: q.denom, color: "#4285f4", label: 'frac1Text' },
+                { pie: 'pie2', numerator: q.b, denominator: q.denom, color: "#3d8af8", label: 'frac2Text' },
+                { pie: 'pie3', numerator: 0, denominator: q.denom, color: "#5ad683", label: 'frac3Text' }
+            ]; locked = false;
+            document.getElementById('messageBox').textContent = "";
+            updatePiesAndAnswer();
+            updateQuestionFooter();
+            updateQuizNumbers();
+            document.getElementById('nextBtn').style.display = "none";
+            // Re-enable buttons if moving back from finished state
+            document.getElementById('hintButton').disabled = false;
+            document.getElementById('checkButton').disabled = false;
+        }
+        function updateQuestionFooter() {
+            document.querySelector('.footer').textContent = `Question ${qIndex + 1} of ${QUESTIONS.length}`;
+        }
+        function updateQuizNumbers() {
+            let stacks = document.querySelectorAll('.frac-stack');
+            stacks[0].querySelectorAll('span')[0].textContent = QUESTIONS[qIndex].a;
+            stacks[0].querySelectorAll('span')[1].textContent = QUESTIONS[qIndex].denom;
+            stacks[1].querySelectorAll('span')[0].textContent = QUESTIONS[qIndex].b;
+            stacks[1].querySelectorAll('span')[1].textContent = QUESTIONS[qIndex].denom;
+        }
+        function checkAns() {
+            let n = document.getElementById('numerator').value, d = document.getElementById('denominator').value;
+            if (Number(n) == QUESTIONS[qIndex].solution.num && Number(d) == QUESTIONS[qIndex].solution.denom) {
+                document.getElementById('messageBox').textContent = "Correct! Well done.";
+                locked = true;
+                document.getElementById('nextBtn').style.display = (qIndex < QUESTIONS.length - 1) ? "inline-block" : "inline-block";
+            } else document.getElementById('messageBox').textContent = "Try again!";
+        }
+        function updatePiesAndAnswer() {
+            drawPie('pie1', fractions[0].numerator, fractions[0].denominator, fractions[0].color, false);
+            drawPie('pie2', fractions[1].numerator, fractions[1].denominator, fractions[1].color, false);
+            drawPie('pie3', fractions[2].numerator, fractions[2].denominator, fractions[2].color, true);
+            document.getElementById('numerator').value = fractions[2].numerator;
+            document.getElementById('denominator').value = fractions[2].denominator;
+        }
+        function drawPie(pieId, numerator, denominator, color, isResultPie) {
+            const svg = document.getElementById(pieId); svg.innerHTML = "";
+            for (let i = 0; i < denominator; i++) {
+                let isActive = (!isResultPie && i < numerator) || (isResultPie && i < numerator);
+                let start = (2 * Math.PI / denominator) * i - Math.PI / 2;
+                let end = start + 2 * Math.PI / denominator;
+                let x1 = CENTER + RADIUS * Math.cos(start), y1 = CENTER + RADIUS * Math.sin(start);
+                let x2 = CENTER + RADIUS * Math.cos(end), y2 = CENTER + RADIUS * Math.sin(end);
+                let d = `M${CENTER},${CENTER} L${x1},${y1} A${RADIUS},${RADIUS} 0 0,1 ${x2},${y2} Z`;
+                let path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+                path.setAttribute('d', d);
+                path.setAttribute('fill', isActive ? color : "#e7eaf2");
+                path.setAttribute('class', 'slice-arc');
+                if (isActive && !isResultPie && !locked) {
+                    path.addEventListener('mousedown', function (e) {
+                        path.classList.add('dragging');
+                        document.onmousemove = function (ev) {
+                            path.setAttribute('transform', `translate(${ev.clientX - CENTER}px,${ev.clientY - CENTER}px)`);
+                        };
+                        document.onmouseup = function (ev) {
+                            path.classList.remove('dragging');
+                            path.setAttribute('transform', '');
+                            document.onmousemove = null; document.onmouseup = null;
+                            let rect = document.getElementById('pie3').getBoundingClientRect();
+                            if (ev.clientX > rect.left && ev.clientX < rect.right && ev.clientY > rect.top && ev.clientY < rect.bottom) {
+                                animateArcToResult(path, pieId);
+                            }
+                        };
+                    });
+                }
+                svg.appendChild(path);
+            }
+            document.getElementById(isResultPie ? fractions[2].label : (pieId === 'pie1' ? fractions[0].label : fractions[1].label)).textContent = `${numerator}/${denominator}`;
+        }
+        function animateArcToResult(path, sourcePieId) {
+            path.style.transition = "transform 0.6s cubic-bezier(.4,2.2,.2,1),opacity 0.4s";
+            path.style.transform = "scale(1.24)";
+            setTimeout(function () {
+                path.style.opacity = "0";
+                setTimeout(function () {
+                    let src = fractions.find(f => f.pie === sourcePieId);
+                    let dest = fractions.find(f => f.pie === 'pie3');
+                    if (src.numerator > 0) { src.numerator--; dest.numerator++; updatePiesAndAnswer(); }
+                }, 320);
+            }, 250);
+        }
+        function showHint() {
+            document.getElementById('messageBox').textContent = `Add numerators: ${QUESTIONS[qIndex].a} + ${QUESTIONS[qIndex].b}, denominator stays ${QUESTIONS[qIndex].denom}.`;
+        }
+        function showMsg() {
+            document.getElementById('messageBox').textContent = "Drag the blue pie slices to the result card!";
+        }
+        document.getElementById('nextBtn').onclick = function () {
+            qIndex++;
+            if (qIndex < QUESTIONS.length) {
+                setupQuestion(qIndex);
+            } else {
+                document.querySelector('.footer').textContent = "";
+                document.getElementById('messageBox').textContent = "You have completed all fraction addition questions! 🎉";
+                document.getElementById('nextBtn').style.display = "none";
+                document.getElementById('hintButton').disabled = true;
+                document.getElementById('checkButton').disabled = true;
+            }
+        };
+        setupQuestion(0);
+    </script>
+</body>
+
+</html>
